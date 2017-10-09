@@ -1,0 +1,61 @@
+version: "3.3"
+
+services:
+
+  ########################### base images: ###########################
+
+
+
+  base:
+    build: base
+  basenodejs:
+    build: basenodejs
+  basescala:
+    build: basescala
+
+
+
+  ########################### databases: ###########################
+
+
+
+  couchlocal:
+    image: klaemo/couchdb:1.6.1
+    volumes:
+      - /dockerdata/couchdb:/usr/local/var/lib/couchdb
+  couchproxy:
+    build: couchproxy
+    environment:
+      CLOUDANT_USERNAME:
+      CLOUDANT_AUTHORIZATION_HEADER:
+  postgres:
+    image: "postgres:9.4"
+    environment:
+      POSTGRES_PASSWORD: asdf
+    volumes:
+    - /dockerdata/postgres:/var/lib/postgresql/data
+
+
+
+  ########################### services: ###########################
+
+  scheduler:
+    build:
+      context: scheduler
+      args:
+        github_username: "${GITHUB_USERNAME}"
+        github_access_token: "${GITHUB_ACCESS_TOKEN}"
+    links:
+      - couchproxy:couch
+    ports:
+      - "9600:8000"
+
+  schedulergrunt:
+    build:
+      context: django_scheduler
+      args:
+        github_username: "${GITHUB_USERNAME}"
+        github_access_token: "${GITHUB_ACCESS_TOKEN}"
+    ports:
+      - "9601:9601"
+      - "35729:35729"

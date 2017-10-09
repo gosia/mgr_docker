@@ -1,0 +1,69 @@
+Run services in docker (`Docker 17.09.0-ce`, `docker-compose 1.16.1`).
+
+Available services:
+
+* scheduler (scala backend)
+* schedulergrunt (run frontend grunt server, use to develop only)
+
+
+Available dbs:
+
+* couchlocal (local version of couchdb)
+* couchproxy (proxy to cloudant hosted couchdb)
+* postgres
+
+
+First steps
+===========
+
+Create cloudant account
+-----------------------
+
+Cloudant stores couchdb databases in the cloud so you don't have to run it on your machine.
+Go to http://cloudant.com and create account.
+
+Create github access token
+--------------------------
+
+https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/
+
+Set your environment variables
+------------------------------
+
+Make sure environment variables defined in `local-envs.sh` are exported in your bash.
+
+Install docker and docker-compose
+---------------------------------
+
+This project is tested with `Docker 17.09.0-ce` and `docker-compose 1.16.1`.
+
+Build base images
+-----------------
+
+Base images are used by all services. They main aim is to cache apt-get and maven packages.
+
+```bash
+➜  cd ii
+➜  docker-compose build --no-cache base
+➜  docker-compose build --no-cache basenodejs
+➜  docker-compose build --no-cache basescala
+```
+
+General
+=======
+
+Running a service
+-----------------
+
+```bash
+➜  cd ii
+➜  docker-compose up -d service_name
+```
+
+See what is running
+-------------------
+
+```bash
+➜  cd ii
+➜  docker-compose ps
+```
