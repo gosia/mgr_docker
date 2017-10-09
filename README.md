@@ -16,16 +16,25 @@ Available dbs:
 First steps
 ===========
 
-Create cloudant account
------------------------
+Fork git repos
+--------------
 
-Cloudant stores couchdb databases in the cloud so you don't have to run it on your machine.
-Go to http://cloudant.com and create account.
+You need to fork those git repositories to your git account:
+
+* scheduler (https://github.com/iiuni/scheduler)
+* django_scheduler (https://github.com/iiuni/django_scheduler)
+* runner (https://github.com/iiuni/runner)
 
 Create github access token
 --------------------------
 
 https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/
+
+Create cloudant account
+-----------------------
+
+Cloudant stores couchdb databases in the cloud so you don't have to run it on your machine.
+Go to http://cloudant.com and create account.
 
 Set your environment variables
 ------------------------------
@@ -37,16 +46,11 @@ Install docker and docker-compose
 
 This project is tested with `Docker 17.09.0-ce` and `docker-compose 1.16.1`.
 
-Build base images
------------------
-
-Base images are used by all services. They main aim is to cache apt-get and maven packages.
+Run install script
+------------------
 
 ```bash
-➜  cd ii
-➜  docker-compose build --no-cache base
-➜  docker-compose build --no-cache basenodejs
-➜  docker-compose build --no-cache basescala
+➜  ./install.sh
 ```
 
 General
@@ -66,4 +70,16 @@ See what is running
 ```bash
 ➜  cd ii
 ➜  docker-compose ps
+```
+
+Building base images
+--------------------
+
+Base images are used by all services. They main aim is to cache apt-get and maven packages.
+
+```bash
+➜  cd ii
+➜  docker-compose build --no-cache base
+➜  docker-compose build --no-cache basenodejs
+➜  docker-compose build --no-cache basescala
 ```
