@@ -79,3 +79,36 @@ Base images are used by all services. They main aim is to cache apt-get and mave
 ➜  docker-compose build --no-cache basenodejs
 ➜  docker-compose build --no-cache basescala
 ```
+
+
+Scheduler frontend
+==================
+
+Scheduler frontend is what you should run to be able to open scheduler in browser.
+
+Run
+---
+
+```bash
+cd ii
+docker-compose up -d schedulerfrontend
+```
+
+Setup db
+--------
+
+Postgres password: 'asdf'.
+
+```bash
+cd ii
+docker-compose up -d schedulerfrontend
+docker exec -ti ii_postgres_1 psql -U postgres -d postgres --password -c 'create database scheduler_frontend;'
+docker exec -ti ii_schedulerfrontend_1 python manage.py migrate --settings=scheduler_frontend.settings_docker
+docker exec -ti ii_schedulerfrontend_1 python manage.py createsuperuser --username admin --email admin@cs.uni.wroc.pl --settings=scheduler_frontend.settings_docker
+```
+
+Open scheduler in browser
+-------------------------
+
+Go to [http://localhost:9602/admin/](http://localhost:9602/admin/) and log in (user:admin, password: yours from last step).
+Then go to [http://localhost:9602/scheduler/](http://localhost:9602/scheduler/).
