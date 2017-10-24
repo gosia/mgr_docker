@@ -21,15 +21,19 @@ services:
 
   couchlocal:
     image: klaemo/couchdb:1.6.1
+    ports:
+      - "5984:5984"
+    expose:
+      - "5984"
     volumes:
-      - /dockerdata/couchdb:/usr/local/var/lib/couchdb
+      - $II_CLONE_PATH/dockerdata/couchdb:/usr/local/var/lib/couchdb
   couchproxy:
     build: couchproxy
     environment:
       CLOUDANT_USERNAME:
       CLOUDANT_AUTHORIZATION_HEADER:
   postgres:
-    image: "postgres:9.4"
+    image: "postgres:9.5"
     environment:
       POSTGRES_PASSWORD: asdf
     volumes:
@@ -46,7 +50,7 @@ services:
         github_username: "${GITHUB_USERNAME}"
         github_access_token: "${GITHUB_ACCESS_TOKEN}"
     links:
-      - couchproxy:couch
+      - couchlocal:couch
     ports:
       - "9600:8000"
 
