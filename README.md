@@ -25,16 +25,12 @@ You need to fork those git repositories to your git account:
 * django_scheduler (https://github.com/iiuni/django_scheduler)
 * runner (https://github.com/iiuni/runner)
 
+
 Create github access token
 --------------------------
 
 https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/
 
-Create cloudant account
------------------------
-
-Cloudant stores couchdb databases in the cloud so you don't have to run it on your machine.
-Go to http://cloudant.com and create account.
 
 Set your environment variables
 ------------------------------
