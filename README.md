@@ -84,7 +84,7 @@ Base images are used by all services. They main aim is to cache apt-get and mave
 ```bash
 ➜  cd ii
 ➜  docker-compose build --no-cache base
-➜  docker-compose build --no-cache basenodejs
+➜  docker-compose build --no-cache basepythonnodejs
 ➜  docker-compose build --no-cache basescala
 ```
 
