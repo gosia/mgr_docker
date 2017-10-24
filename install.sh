@@ -24,8 +24,6 @@ declare -a vars=(
   "II_CLONE_PATH"
   "GITHUB_USERNAME"
   "GITHUB_ACCESS_TOKEN"
-  "CLOUDANT_USERNAME"
-  "CLOUDANT_AUTHORIZATION_HEADER"
 )
 
 for var in "${vars[@]}"
@@ -64,15 +62,17 @@ info "Cloning repos to $II_CLONE_PATH"
 cd $II_CLONE_PATH
 
 declare -a repos=(
-  "git@github.com:${GITHUB_USERNAME}/scheduler.git"
-  "git@github.com:${GITHUB_USERNAME}/django_scheduler.git"
-  "git@github.com:${GITHUB_USERNAME}/runner.git"
+  "git@github.com:${GITHUB_ORIGIN_USERNAME}/scheduler.git"
+  "git@github.com:${GITHUB_ORIGIN_USERNAME}/django_scheduler.git"
+  "git@github.com:${GITHUB_ORIGIN_USERNAME}/runner.git"
+  "git@github.com:${GITHUB_ORIGIN_USERNAME}/scheduler_frontend.git"
+  "git@github.com:${GITHUB_ORIGIN_USERNAME}/scheduler_scripts.git"
 )
 
 for repo in "${repos[@]}"
 do
     printf "Cloning $repo\n"
-    git clone $repo > /dev/null 2>&1
+    git clone $repo
 done
 
 
@@ -82,7 +82,7 @@ cd runner/ii
 
 declare -a baseimgs=(
   "base"
-  "basenodejs"
+  "basepythonnodejs"
   "basescala"
 )
 
