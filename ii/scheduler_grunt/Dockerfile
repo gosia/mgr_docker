@@ -1,4 +1,4 @@
-FROM ii_basenodejs:latest
+FROM ii_basepythonnodejs:latest
 
 ARG github_username
 ARG github_access_token

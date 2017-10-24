@@ -8,8 +8,8 @@ services:
 
   base:
     build: base
-  basenodejs:
-    build: basenodejs
+  basepythonnodejs:
+    build: basepythonnodejs
   basescala:
     build: basescala
 
@@ -56,10 +56,22 @@ services:
 
   schedulergrunt:
     build:
-      context: django_scheduler
+      context: scheduler_grunt
       args:
         github_username: "${GITHUB_USERNAME}"
         github_access_token: "${GITHUB_ACCESS_TOKEN}"
     ports:
       - "9601:9601"
       - "35729:35729"
+
+  schedulerfrontend:
+    build:
+      context: scheduler_frontend
+      args:
+        github_username: "${GITHUB_USERNAME}"
+        github_access_token: "${GITHUB_ACCESS_TOKEN}"
+    ports:
+      - "9602:8000"
+    links:
+      - scheduler:scheduler
+      - postgres:postgres
