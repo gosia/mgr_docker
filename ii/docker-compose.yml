@@ -75,3 +75,14 @@ services:
     links:
       - scheduler:scheduler
       - postgres:postgres
+
+  schedulerscripts:
+    build:
+      context: scheduler_scripts
+      args:
+        github_username: "${GITHUB_USERNAME}"
+        github_access_token: "${GITHUB_ACCESS_TOKEN}"
+    links:
+      - scheduler:scheduler
+      - postgres:postgres
+      - couchlocal:couch

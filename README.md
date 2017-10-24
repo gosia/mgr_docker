@@ -3,7 +3,9 @@ Run services in docker (`Docker 17.09.0-ce`, `docker-compose 1.16.1`).
 Available services:
 
 * scheduler (scala backend)
-* schedulergrunt (run frontend grunt server, use to develop only)
+* schedulerfrontend (django frontend)
+* schedulergrunt (frontend grunt server, use to develop js/html/css only)
+* schedulerscripts (couch views, scheduler python client)
 
 
 Available dbs:
@@ -23,8 +25,11 @@ You need to fork those git repositories to your git account:
 
 * scheduler (https://github.com/iiuni/scheduler)
 * django_scheduler (https://github.com/iiuni/django_scheduler)
+* scheduler_frontend (https://github.com/iiuni/scheduler_frontend)
 * runner (https://github.com/iiuni/runner)
+* scheduler_scripts (https://github.com/iiuni/scheduler_scripts)
 
+You will be pushing changes to your forks but pulling from iiuni repos.
 
 Create github access token
 --------------------------
@@ -36,6 +41,7 @@ Set your environment variables
 ------------------------------
 
 Make sure environment variables defined in `local-envs.sh` are exported in your bash.
+For example copy-paste it to you `.bashrc_profile` or `.zshrc_profile`
 
 Install docker and docker-compose
 ---------------------------------
@@ -44,6 +50,8 @@ This project is tested with `Docker 17.09.0-ce` and `docker-compose 1.16.1`.
 
 Run install script
 ------------------
+
+Make sure environments in `local-envs.sh` are exported.
 
 ```bash
 ➜  ./install.sh
@@ -80,6 +88,41 @@ Base images are used by all services. They main aim is to cache apt-get and mave
 ➜  docker-compose build --no-cache basescala
 ```
 
+Scheduler
+=========
+
+Scala backend. You'll need it to run frontend as well.
+
+Run
+---
+
+```bash
+cd ii
+docker-compose up -d scheduler
+```
+
+Setup db
+--------
+
+Create couch database and deploy views.
+
+```bash
+docker-compose run schedulerscripts python couch.py -s http://couch:5984 -d scheduler
+```
+
+Python console client
+---------------------
+
+It's possible to connect to scheduler from python console.
+
+```bash
+➜  docker-compose run schedulerscripts python
+>>> from thriftgen.client import SchedulerClient
+>>> c = SchedulerClient().client()
+>>> c.getConfigs()
+[]
+>>>
+```
 
 Scheduler frontend
 ==================
