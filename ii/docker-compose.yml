@@ -53,6 +53,8 @@ services:
       - couchlocal:couch
     ports:
       - "9600:8000"
+    volumes:
+      - ${II_CLONE_PATH}/scheduler:/app/scheduler
 
   schedulergrunt:
     build:
@@ -63,6 +65,8 @@ services:
     ports:
       - "9601:9601"
       - "35729:35729"
+    volumes:
+      - ${II_CLONE_PATH}/django_scheduler:/app/django_scheduler
 
   schedulerfrontend:
     build:
@@ -75,6 +79,9 @@ services:
     links:
       - scheduler:scheduler
       - postgres:postgres
+    volumes:
+      - ${II_CLONE_PATH}/django_scheduler:/app/django_scheduler
+      - ${II_CLONE_PATH}/scheduler_frontend:/app/scheduler_frontend
 
   schedulerscripts:
     build:
@@ -86,3 +93,5 @@ services:
       - scheduler:scheduler
       - postgres:postgres
       - couchlocal:couch
+    volumes:
+      - ${II_CLONE_PATH}/scheduler_scripts:/app/scheduler_scripts

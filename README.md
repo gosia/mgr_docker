@@ -110,6 +110,13 @@ Create couch database and deploy views.
 docker-compose run schedulerscripts python couch.py -s http://couch:5984 -d scheduler
 ```
 
+Load db dump
+------------
+
+```bash
+docker-compose run schedulerscripts curl -d @data/couch_dump.json -H"Content-Type: application/json" -X POST http://couch:5984/scheduler/_bulk_docs
+```
+
 Python console client
 ---------------------
 

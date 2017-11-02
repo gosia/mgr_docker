@@ -8,12 +8,16 @@ RUN cd /app && \
     cd scheduler_frontend && \
     pip install -r scheduler_frontend/requirements.txt
 
-COPY settings.py /app/scheduler_frontend/scheduler_frontend/settings_docker.py
+COPY settings.py /app/settings_docker.py
 
 RUN cd /app/scheduler_frontend && \
+    ln -sf /app/settings_docker.py /app/scheduler_frontend/scheduler_frontend/settings_docker.py && \
     python manage.py collectstatic --settings=scheduler_frontend.settings_docker --noinput && \
     python manage.py collecttemplates --settings=scheduler_frontend.settings_docker
 
 WORKDIR /app/scheduler_frontend
 EXPOSE 8000
-CMD python manage.py runserver 0.0.0.0:8000 --settings=scheduler_frontend.settings_docker
+CMD ln -sf /app/settings_docker.py /app/scheduler_frontend/scheduler_frontend/settings_docker.py && \
+    python manage.py collectstatic --settings=scheduler_frontend.settings_docker --noinput && \
+    python manage.py collecttemplates --settings=scheduler_frontend.settings_docker && \
+    python manage.py runserver 0.0.0.0:8000 --settings=scheduler_frontend.settings_docker
