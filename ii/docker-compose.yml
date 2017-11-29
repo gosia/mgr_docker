@@ -53,7 +53,14 @@ services:
       - couchlocal:couch
     ports:
       - "9600:8000"
+    environment:
+      II_SCHEDULER_HOST: 0.0.0.0
+      II_SCHEDULER_PORT: 8000
+      II_COUCH_HOST: couch
+      II_COUCH_PORT: 5984
+      II_COUCH_NAME: scheduler
     volumes:
+      - ~/.m2/repository:/root/.m2/repository
       - ${II_CLONE_PATH}/scheduler:/app/scheduler
 
   schedulergrunt:
