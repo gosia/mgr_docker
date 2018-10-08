@@ -1,4 +1,4 @@
-FROM ii_base:latest
+FROM base:latest
 
 RUN apt-get update && \
     apt-get install -y python-pip python-dev python-psycopg2 libpq-dev libssl-dev libffi-dev libxml2-dev libxslt1-dev && \

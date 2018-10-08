@@ -1,3 +1,3 @@
-FROM ii_base:latest
+FROM base:latest
 
 RUN apt-get install -y maven

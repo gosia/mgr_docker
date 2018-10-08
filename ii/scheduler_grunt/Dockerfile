@@ -14,4 +14,4 @@ WORKDIR /app/django_scheduler/grunt
 
 EXPOSE 9601
 EXPOSE 35729
-CMD grunt connect:livereload:keepalive --debug
+CMD ["grunt connect:livereload:keepalive --debug"]

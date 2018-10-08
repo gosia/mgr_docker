@@ -18,19 +18,6 @@ Available dbs:
 First steps
 ===========
 
-Fork git repos
---------------
-
-You need to fork those git repositories to your git account:
-
-* scheduler (https://github.com/iiuni/scheduler)
-* django_scheduler (https://github.com/iiuni/django_scheduler)
-* scheduler_frontend (https://github.com/iiuni/scheduler_frontend)
-* runner (https://github.com/iiuni/runner)
-* scheduler_scripts (https://github.com/iiuni/scheduler_scripts)
-
-You will be pushing changes to your forks but pulling from iiuni repos.
-
 Create github access token
 --------------------------
 
@@ -162,3 +149,42 @@ Open scheduler in browser
 
 Go to [http://localhost:9602/admin/](http://localhost:9602/admin/) and log in (user:admin, password: yours from last step).
 Then go to [http://localhost:9602/scheduler/](http://localhost:9602/scheduler/).
+
+
+Scheduler scripts
+=================
+
+Regenerate thrift file
+----------------------
+
+* Copy-paste new thrift file to `thriftgen/scheduler.thrift`
+* Run command:
+```bash
+docker run -v $II_CLONE_PATH/scheduler_scripts/thriftgen:/data --rm thrift:0.10.0 thrift --gen py -out /data /data/scheduler.thrift
+```
+
+Python console client
+---------------------
+
+It's possible to connect to scheduler from python console.
+
+```bash
+➜  docker-compose run schedulerscripts bpython
+>>> from thriftgen.client import SchedulerClient
+>>> c = SchedulerClient().client()
+>>> c.getConfigs()
+[]
+>>>
+```
+
+Django scheduler
+================
+
+Regenerate thrift file
+----------------------
+
+* Copy-paste new thrift file to `django_scheduler/thriftgen/scheduler.thrift`
+* Run command:
+```bash
+docker run -v $II_CLONE_PATH/django_scheduler/django_scheduler/thriftgen:/data --rm thrift:0.10.0 thrift --gen py -out /data /data/scheduler.thrift
+```

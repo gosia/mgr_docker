@@ -1,4 +1,4 @@
-FROM ii_basescala:latest
+FROM basescala:latest
 
 ARG github_username
 ARG github_access_token
@@ -11,4 +11,4 @@ COPY run.sh /app/run.sh
 WORKDIR /app/scheduler
 
 EXPOSE 8000
-CMD /app/run.sh
+CMD ["/app/run.sh"]

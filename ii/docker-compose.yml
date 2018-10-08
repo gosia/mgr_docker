@@ -8,10 +8,12 @@ services:
 
   base:
     build: base
+    image: base
   basepythonnodejs:
     build: basepythonnodejs
   basescala:
     build: basescala
+    image: basescala
 
 
 
@@ -29,6 +31,7 @@ services:
       - $II_CLONE_PATH/dockerdata/couchdb:/usr/local/var/lib/couchdb
   couchproxy:
     build: couchproxy
+    image: couchproxy
     environment:
       CLOUDANT_USERNAME:
       CLOUDANT_AUTHORIZATION_HEADER:
@@ -36,8 +39,6 @@ services:
     image: "postgres:9.5"
     environment:
       POSTGRES_PASSWORD: asdf
-    volumes:
-    - /dockerdata/postgres:/var/lib/postgresql/data
 
 
 
@@ -89,6 +90,7 @@ services:
     volumes:
       - ${II_CLONE_PATH}/django_scheduler:/app/django_scheduler
       - ${II_CLONE_PATH}/scheduler_frontend:/app/scheduler_frontend
+      - ${II_CLONE_PATH}/runner/ii/scheduler_frontend/settings.py:/app/settings_docker.py
 
   schedulerscripts:
     build:

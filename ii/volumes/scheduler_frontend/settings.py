@@ -31,30 +31,11 @@ SCHEDULER_BACKEND_HOST = 'scheduler'
 SCHEDULER_BACKEND_PORT = 8000
 SCHEDULER_BASE_HREF = 'http://localhost:9602/scheduler/'
 
-STATIC_URL = '/static/'
-STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, 'static'),
-)
-STATICFILES_FINDERS = (
-    'django.contrib.staticfiles.finders.FileSystemFinder',
-)
 
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'console': {
-            'class': 'logging.StreamHandler',
-        },
-    },
-    'loggers': {
-        'django': {
-            'handlers': ['console'],
-            'level': 'INFO',
-        },
-        'scheduler_frontend': {
-            'handlers': ['console'],
-            'level': 'INFO',
-        },
-    },
-}
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATICFILES_DIRS = [STATIC_ROOT]
+STATICFILES_FINDERS = (
+    "django.contrib.staticfiles.finders.FileSystemFinder",
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+)
+STATIC_URL = "/static/"
