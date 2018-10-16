@@ -62,11 +62,11 @@ info "Cloning repos to $II_CLONE_PATH"
 cd $II_CLONE_PATH
 
 declare -a repos=(
-  "git@github.com:${GITHUB_ORIGIN_USERNAME}/scheduler.git"
-  "git@github.com:${GITHUB_ORIGIN_USERNAME}/django_scheduler.git"
-  "git@github.com:${GITHUB_ORIGIN_USERNAME}/runner.git"
-  "git@github.com:${GITHUB_ORIGIN_USERNAME}/scheduler_frontend.git"
-  "git@github.com:${GITHUB_ORIGIN_USERNAME}/scheduler_scripts.git"
+  "git@github.com:iiuni/scheduler.git"
+  "git@github.com:iiuni/django_scheduler.git"
+  "git@github.com:iiuni/runner.git"
+  "git@github.com:iiuni/scheduler_frontend.git"
+  "git@github.com:iiuni/scheduler_scripts.git"
 )
 
 for repo in "${repos[@]}"

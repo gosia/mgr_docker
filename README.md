@@ -23,6 +23,7 @@ Create github access token
 
 https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/
 
+You need access to repo.
 
 Set your environment variables
 ------------------------------
@@ -118,6 +119,54 @@ It's possible to connect to scheduler from python console.
 >>>
 ```
 
+Scheduler frontend on grunt
+===========================
+If you develop only frontend that's simplified version of frontend that doesn't
+talk to backend but takes backend responses from *.json files.
+
+Run
+---
+
+```bash
+cd ii
+docker-compose up -d --no-deps --force-recreate schedulergrunt
+```
+
+Setup
+-----
+
+You need to install grunt dependencies and build static files with grunt.
+
+```bash
+cd ii
+docker-compose run --rm schedulergrunt "npm install"
+docker-compose run --rm schedulergrunt "grunt build"
+```
+
+Open scheduler in browser
+-------------------------
+
+Go to [http://localhost:9601/](http://localhost:9601/).
+
+Regenerating thrift file
+----------------------
+
+* Copy-paste new thrift file to `django_scheduler/thriftgen/scheduler.thrift`
+* Run command:
+```bash
+docker run -v $II_CLONE_PATH/django_scheduler/django_scheduler/thriftgen:/data --rm thrift:0.10.0 thrift --gen py -out /data /data/scheduler.thrift
+```
+
+Developing static files
+-----------------------
+
+When changing js or css files, you have to run `grunt build` command to see changes
+in browser (and before `git push` to apply changes).
+
+```bash
+docker-compose run --rm schedulergrunt "grunt build"
+```
+
 Scheduler frontend
 ==================
 
@@ -175,16 +224,4 @@ It's possible to connect to scheduler from python console.
 >>> c.getConfigs()
 []
 >>>
-```
-
-Django scheduler
-================
-
-Regenerate thrift file
-----------------------
-
-* Copy-paste new thrift file to `django_scheduler/thriftgen/scheduler.thrift`
-* Run command:
-```bash
-docker run -v $II_CLONE_PATH/django_scheduler/django_scheduler/thriftgen:/data --rm thrift:0.10.0 thrift --gen py -out /data /data/scheduler.thrift
 ```
