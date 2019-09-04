@@ -2,28 +2,19 @@ Run services in docker (`Docker 17.09.0-ce`, `docker-compose 1.16.1`).
 
 Available services:
 
-* scheduler (scala backend)
-* schedulerfrontend (django frontend)
-* schedulergrunt (frontend grunt server, use to develop js/html/css only)
-* schedulerscripts (couch views, scheduler python client)
+* scheduler_backend (scala backend for scheduler)
+* scheduler_frontend (django and grunt frontend for scheduler)
+* scheduler_scripts (couch views, scheduler python client)
 
 
 Available dbs:
 
-* couchlocal (local version of couchdb)
-* couchproxy (proxy to cloudant hosted couchdb)
+* couch (local version of couchdb)
 * postgres
 
 
 First steps
 ===========
-
-Create github access token
---------------------------
-
-https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/
-
-You need access to repo.
 
 Set your environment variables
 ------------------------------
@@ -45,15 +36,15 @@ Make sure environments in `local-envs.sh` are exported.
 ➜  ./install.sh
 ```
 
-General
-=======
+General knowledge
+=================
 
 Running a service
 -----------------
 
 ```bash
 ➜  cd ii
-➜  docker-compose up -d service_name
+➜  docker-compose up -d --no-deps --force-recreate service_name
 ```
 
 See what is running
@@ -64,20 +55,19 @@ See what is running
 ➜  docker-compose ps
 ```
 
-Building base images
---------------------
+Building images
+---------------
 
-Base images are used by all services. They main aim is to cache apt-get and maven packages.
+Before service can be run it has to be built.
+Rebuild it when Dockerfile is changed or when requirements are added.
 
 ```bash
 ➜  cd ii
-➜  docker-compose build --no-cache base
-➜  docker-compose build --no-cache basepythonnodejs
-➜  docker-compose build --no-cache basescala
+➜  docker-compose build --no-cache service_name
 ```
 
-Scheduler
-=========
+Scheduler backend
+=================
 
 Scala backend. You'll need it to run frontend as well.
 
@@ -86,7 +76,7 @@ Run
 
 ```bash
 cd ii
-docker-compose up -d scheduler
+docker-compose up -d scheduler_backend
 ```
 
 Setup db
@@ -95,14 +85,14 @@ Setup db
 Create couch database and deploy views.
 
 ```bash
-docker-compose run schedulerscripts python couch.py -s http://couch:5984 -d scheduler
+docker-compose run scheduler_scripts python couch.py -s http://couch:5984 -d scheduler
 ```
 
 Load db dump
 ------------
 
 ```bash
-docker-compose run schedulerscripts curl -d @data/couch_dump.json -H"Content-Type: application/json" -X POST http://couch:5984/scheduler/_bulk_docs
+docker-compose run scheduler_scripts curl -d @data/couch_dump.json -H"Content-Type: application/json" -X POST http://couch:5984/scheduler/_bulk_docs
 ```
 
 Python console client
@@ -111,7 +101,7 @@ Python console client
 It's possible to connect to scheduler from python console.
 
 ```bash
-➜  docker-compose run schedulerscripts python
+➜  docker-compose run scheduler_scripts python
 >>> from thriftgen.client import SchedulerClient
 >>> c = SchedulerClient().client()
 >>> c.getConfigs()
@@ -119,9 +109,9 @@ It's possible to connect to scheduler from python console.
 >>>
 ```
 
-Scheduler frontend on grunt
-===========================
-If you develop only frontend that's simplified version of frontend that doesn't
+Scheduler frontend (only grunt)
+==============================
+If you develop only frontend - there's a simplified version of frontend that doesn't
 talk to backend but takes backend responses from *.json files.
 
 Run
@@ -129,7 +119,7 @@ Run
 
 ```bash
 cd ii
-docker-compose up -d --no-deps --force-recreate schedulergrunt
+docker-compose up -d --no-deps --force-recreate scheduler_frontend
 ```
 
 Setup
@@ -139,23 +129,14 @@ You need to install grunt dependencies and build static files with grunt.
 
 ```bash
 cd ii
-docker-compose run --rm schedulergrunt "npm install"
-docker-compose run --rm schedulergrunt "grunt build"
+docker-compose run --rm --no-deps scheduler_frontend "./scripts/install.sh"
 ```
 
-Open scheduler in browser
--------------------------
+Open scheduler in browser (only grunt)
+--------------------------------------
 
 Go to [http://localhost:9601/](http://localhost:9601/).
 
-Regenerating thrift file
-----------------------
-
-* Copy-paste new thrift file to `django_scheduler/thriftgen/scheduler.thrift`
-* Run command:
-```bash
-docker run -v $II_CLONE_PATH/django_scheduler/django_scheduler/thriftgen:/data --rm thrift:0.10.0 thrift --gen py -out /data /data/scheduler.thrift
-```
 
 Developing static files
 -----------------------
@@ -164,7 +145,7 @@ When changing js or css files, you have to run `grunt build` command to see chan
 in browser (and before `git push` to apply changes).
 
 ```bash
-docker-compose run --rm schedulergrunt "grunt build"
+docker-compose run --rm --no-deps scheduler_frontend bash -c "cd grunt; grunt build"
 ```
 
 Scheduler frontend
@@ -177,7 +158,7 @@ Run
 
 ```bash
 cd ii
-docker-compose up -d schedulerfrontend
+docker-compose up -d scheduler_frontend
 ```
 
 Setup db
@@ -187,17 +168,27 @@ Postgres password: 'asdf'.
 
 ```bash
 cd ii
-docker-compose up -d schedulerfrontend
+docker-compose up -d scheduler_frontend
 docker exec -ti ii_postgres_1 psql -U postgres -d postgres --password -c 'create database scheduler_frontend;'
-docker exec -ti ii_schedulerfrontend_1 python manage.py migrate --settings=scheduler_frontend.settings_docker
-docker exec -ti ii_schedulerfrontend_1 python manage.py createsuperuser --username admin --email admin@cs.uni.wroc.pl --settings=scheduler_frontend.settings_docker
+docker exec -ti ii_scheduler_frontend_1 python manage.py migrate
+docker exec -ti ii_scheduler_frontend_1 python manage.py createsuperuser --username admin --email admin@cs.uni.wroc.pl
 ```
 
 Open scheduler in browser
 -------------------------
 
-Go to [http://localhost:9602/admin/](http://localhost:9602/admin/) and log in (user:admin, password: yours from last step).
-Then go to [http://localhost:9602/scheduler/](http://localhost:9602/scheduler/).
+Go to [http://localhost:8000/admin/](http://localhost:800/admin/) and log in (user:admin, password: yours from last step).
+Then go to [http://localhost:8000/scheduler/](http://localhost:8000/scheduler/).
+
+
+Regenerating thrift file
+------------------------
+
+* Copy-paste new thrift file to `django_scheduler/thriftgen/scheduler.thrift`
+* Run command:
+```bash
+docker run -v $II_CLONE_PATH/django_scheduler/django_scheduler/thriftgen:/data --rm thrift:0.10.0 thrift --gen py -out /data /data/scheduler.thrift
+```
 
 
 Scheduler scripts
@@ -218,7 +209,7 @@ Python console client
 It's possible to connect to scheduler from python console.
 
 ```bash
-➜  docker-compose run schedulerscripts bpython
+➜  docker-compose run scheduler_scripts bpython
 >>> from thriftgen.client import SchedulerClient
 >>> c = SchedulerClient().client()
 >>> c.getConfigs()
