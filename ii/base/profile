@@ -1,4 +1,0 @@
-
-if [ -f /app/setup-envs.sh ]; then
-    . /app/setup-envs.sh
-fi

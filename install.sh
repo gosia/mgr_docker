@@ -31,6 +31,7 @@ do
     value="${!var}"
     if [ -z "${value}" ]; then
         fail "Environment variable '$var' is not set"
+        exit 1
     fi
 done
 
@@ -65,7 +66,6 @@ declare -a repos=(
   "git@github.com:iiuni/scheduler.git"
   "git@github.com:iiuni/django_scheduler.git"
   "git@github.com:iiuni/runner.git"
-  "git@github.com:iiuni/scheduler_frontend.git"
   "git@github.com:iiuni/scheduler_scripts.git"
 )
 
@@ -76,17 +76,22 @@ do
 done
 
 
-info "Building base images"
+info "Building images"
 
 cd runner/ii
 
 declare -a baseimgs=(
-  "base"
-  "basepythonnodejs"
-  "basescala"
+  "scheduler_frontend"
+  "scheduler_backend"
+  "scheduler_scripts"
 )
 
 for img in "${baseimgs[@]}"
 do
     docker-compose build $img
 done
+
+
+info "Installing projects"
+
+docker-compose run --rm --no-deps scheduler_frontend "./scripts/install.sh"

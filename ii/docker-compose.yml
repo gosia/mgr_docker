@@ -1,19 +1,6 @@
-version: "3.3"
+version: "3.7"
 
 services:
-
-  ########################### base images: ###########################
-
-
-
-  base:
-    build: base
-    image: base
-  basepythonnodejs:
-    build: basepythonnodejs
-  basescala:
-    build: basescala
-    image: basescala
 
 
 
@@ -21,37 +8,32 @@ services:
 
 
 
-  couchlocal:
-    image: klaemo/couchdb:1.6.1
+  couch:
+    image: couchdb:2.3
     ports:
       - "5984:5984"
     expose:
       - "5984"
     volumes:
       - $II_CLONE_PATH/dockerdata/couchdb:/usr/local/var/lib/couchdb
-  couchproxy:
-    build: couchproxy
-    image: couchproxy
-    environment:
-      CLOUDANT_USERNAME:
-      CLOUDANT_AUTHORIZATION_HEADER:
   postgres:
     image: "postgres:9.5"
     environment:
       POSTGRES_PASSWORD: asdf
+    ports:
+      - "5432:5432"
+    expose:
+      - "5432"
 
 
 
   ########################### services: ###########################
 
-  scheduler:
+  scheduler_backend:
     build:
-      context: scheduler
-      args:
-        github_username: "${GITHUB_USERNAME}"
-        github_access_token: "${GITHUB_ACCESS_TOKEN}"
+      context: ${II_CLONE_PATH}/scheduler
     links:
-      - couchlocal:couch
+      - couch:couch
     ports:
       - "9600:8000"
     environment:
@@ -60,47 +42,37 @@ services:
       II_COUCH_HOST: couch
       II_COUCH_PORT: 5984
       II_COUCH_NAME: scheduler
+      II_CLONE_PATH: /app
     volumes:
       - ~/.m2/repository:/root/.m2/repository
       - ${II_CLONE_PATH}/scheduler:/app/scheduler
 
-  schedulergrunt:
+  scheduler_frontend:
     build:
-      context: scheduler_grunt
-      args:
-        github_username: "${GITHUB_USERNAME}"
-        github_access_token: "${GITHUB_ACCESS_TOKEN}"
+      context: ${II_CLONE_PATH}/django_scheduler
     ports:
       - "9601:9601"
       - "35729:35729"
-    volumes:
-      - ${II_CLONE_PATH}/django_scheduler:/app/django_scheduler
-
-  schedulerfrontend:
-    build:
-      context: scheduler_frontend
-      args:
-        github_username: "${GITHUB_USERNAME}"
-        github_access_token: "${GITHUB_ACCESS_TOKEN}"
-    ports:
-      - "9602:8000"
+      - "8000:8000"
+    environment:
+      II_CLONE_PATH: /app
+      II_POSTGRES_HOST: postgres
+      II_POSTGRES_USER: postgres
+      II_POSTGRES_PASSWORD: asdf
+      II_SCHEDULER_HOST: scheduler
+      II_SCHEDULER_PORT: 8000
     links:
-      - scheduler:scheduler
+      - scheduler_backend:scheduler
       - postgres:postgres
     volumes:
       - ${II_CLONE_PATH}/django_scheduler:/app/django_scheduler
-      - ${II_CLONE_PATH}/scheduler_frontend:/app/scheduler_frontend
-      - ${II_CLONE_PATH}/runner/ii/scheduler_frontend/settings.py:/app/settings_docker.py
 
-  schedulerscripts:
+  scheduler_scripts:
     build:
-      context: scheduler_scripts
-      args:
-        github_username: "${GITHUB_USERNAME}"
-        github_access_token: "${GITHUB_ACCESS_TOKEN}"
+      context: ${II_CLONE_PATH}/scheduler_scripts
     links:
-      - scheduler:scheduler
+      - scheduler_backend:scheduler
       - postgres:postgres
-      - couchlocal:couch
+      - couch:couch
     volumes:
       - ${II_CLONE_PATH}/scheduler_scripts:/app/scheduler_scripts
