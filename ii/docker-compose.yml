@@ -31,7 +31,7 @@ services:
 
   scheduler_backend:
     build:
-      context: ${II_CLONE_PATH}/scheduler
+      context: ${II_CLONE_PATH}/scheduler_backend
     links:
       - couch:couch
     ports:
@@ -45,7 +45,7 @@ services:
       II_CLONE_PATH: /app
     volumes:
       - ~/.m2/repository:/root/.m2/repository
-      - ${II_CLONE_PATH}/scheduler:/app/scheduler
+      - ${II_CLONE_PATH}/scheduler_backend:/app/scheduler_backend
 
   scheduler_frontend:
     build:
