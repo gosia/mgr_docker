@@ -49,7 +49,7 @@ services:
 
   scheduler_frontend:
     build:
-      context: ${II_CLONE_PATH}/django_scheduler
+      context: ${II_CLONE_PATH}/scheduler_frontend
     ports:
       - "9601:9601"
       - "35729:35729"
@@ -65,7 +65,7 @@ services:
       - scheduler_backend:scheduler
       - postgres:postgres
     volumes:
-      - ${II_CLONE_PATH}/django_scheduler:/app/django_scheduler
+      - ${II_CLONE_PATH}/scheduler_frontend:/app/scheduler_frontend
 
   scheduler_scripts:
     build:
