@@ -187,7 +187,7 @@ Regenerating thrift file
 * Copy-paste new thrift file to `django_scheduler/thriftgen/scheduler.thrift`
 * Run command:
 ```bash
-docker run -v $II_CLONE_PATH/django_scheduler/django_scheduler/thriftgen:/data --rm thrift:0.10.0 thrift --gen py -out /data /data/scheduler.thrift
+docker run -v $II_CLONE_PATH/scheduler_frontend/django_scheduler/thriftgen:/data --rm thrift:0.11.0 thrift --gen py -out /data /data/scheduler.thrift
 ```
 
 
@@ -200,7 +200,7 @@ Regenerate thrift file
 * Copy-paste new thrift file to `thriftgen/scheduler.thrift`
 * Run command:
 ```bash
-docker run -v $II_CLONE_PATH/scheduler_scripts/thriftgen:/data --rm thrift:0.10.0 thrift --gen py -out /data /data/scheduler.thrift
+docker run -v $II_CLONE_PATH/scheduler_scripts/thriftgen:/data --rm thrift:0.11.0 thrift --gen py -out /data /data/scheduler.thrift
 ```
 
 Python console client
