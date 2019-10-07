@@ -64,7 +64,7 @@ cd $II_CLONE_PATH
 
 declare -a repos=(
   "git@github.com:iiuni/scheduler_backend.git"
-  "git@github.com:iiuni/django_scheduler.git"
+  "git@github.com:iiuni/scheduler_frontend.git"
   "git@github.com:iiuni/runner.git"
   "git@github.com:iiuni/scheduler_scripts.git"
 )

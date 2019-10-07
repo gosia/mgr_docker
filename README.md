@@ -27,6 +27,16 @@ Install docker and docker-compose
 
 This project is tested with `Docker 17.09.0-ce` and `docker-compose 1.16.1`.
 
+Clone this project
+------------------
+
+```bash
+➜  cd $II_CLONE_PATH
+➜  git clone git@github.com:iiuni/runner.git
+➜  cd runner
+
+```
+
 Run install script
 ------------------
 
