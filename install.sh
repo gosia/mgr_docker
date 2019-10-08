@@ -22,8 +22,6 @@ info "Checking environment variables are defined..."
 
 declare -a vars=(
   "II_CLONE_PATH"
-  "GITHUB_USERNAME"
-  "GITHUB_ACCESS_TOKEN"
 )
 
 for var in "${vars[@]}"
